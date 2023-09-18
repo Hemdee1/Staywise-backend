@@ -1,12 +1,7 @@
 import { cleanEnv } from "envalid";
-import { port, str } from "envalid/dist/validators";
-import dotenv from "dotenv";
+import { str, port } from "envalid/dist/validators";
 
-dotenv.config();
-
-const env = cleanEnv(process.env, {
-  MONGO_URL: str(),
+export default cleanEnv(process.env, {
+  MONGO_CONNECTION_STRING: str(),
   PORT: port(),
 });
-
-export default env;
