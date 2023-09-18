@@ -9,6 +9,7 @@ const userSchema = new Schema(
     phoneNumber: { type: Number },
     PaymentInfo: {},
     userPrefrences: {},
+    emailVerified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

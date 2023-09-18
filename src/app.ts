@@ -8,6 +8,9 @@ import MongoStore from "connect-mongo";
 import { requestAuth } from "./mildlewares/auth";
 import env from "./utils/validateEnv";
 import otpRoute from "./otpSystem/route";
+import emailVerificationRoute from "./emailVetification/route";
+import apartmentRoutes from "./routes/apartmentListingRoutes";
+import bookingRoutes from "./routes/bookingRoute";
 
 const app = express();
 
@@ -30,8 +33,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api", userRoute);
-app.use("/api", otpRoute);
+app.use("/user", userRoute);
+app.use("/otp", otpRoute);
+app.use("/emailVerification", emailVerificationRoute);
+app.use("/apartment", apartmentRoutes);
+app.use("/booking", bookingRoutes);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {

@@ -3,6 +3,7 @@ import userModel from "../models/userModel";
 import createHttpError from "http-errors";
 import { hashData } from "../utils/dataHashing";
 import bcrypt from "bcrypt";
+import { sendOtp } from "../utils/sendOtp";
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   try {
@@ -76,6 +77,16 @@ export const registerUser: RequestHandler<
       email: email,
       password: hashedPassword,
     });
+
+    // send the otp for verification
+    const otpDetails = {
+      email,
+      subject: "Email verification",
+      message: "verify your email with the code below",
+      duration: 1,
+    };
+
+    await sendOtp(otpDetails);
     res.status(201).json(user);
   } catch (error) {
     next(error);
@@ -109,6 +120,10 @@ export const loginUser: RequestHandler<
 
     if (!user) {
       throw createHttpError(401, "invalid credential");
+    }
+
+    if (!user?.emailVerified) {
+      createHttpError(500, "Email has not been verified yet, check your inbox");
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
 
