@@ -2,6 +2,8 @@ import express from "express";
 import * as apartmentController from "../controllers/apartmentListingController";
 const router = express.Router();
 
+router.get("/send", apartmentController.sendData);
+
 router.get("/", apartmentController.getApartments);
 router.post("/", apartmentController.createApartment);
 router.get("/:apartmentId", apartmentController.getApartment);

@@ -2,17 +2,18 @@ import { InferSchemaType, Schema, model } from "mongoose";
 
 const apartmentListingSchema = new Schema(
   {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    title: { type: String },
+    description: { type: Object },
     location: {
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      zipCode: { type: Number, required: true },
+      address: { type: String },
+      city: { type: String },
+      country: { type: String },
     },
-    pricing: { type: Number, required: true },
-    images: { type: String, required: true },
+    price: { type: Number, required: true },
+    images: { type: Object, required: true },
     hostId: { type: Schema.Types.ObjectId, required: true },
+    rating: { type: Number },
+    numReviews: { type: Number },
   },
   { timestamps: true }
 );

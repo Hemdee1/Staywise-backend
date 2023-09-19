@@ -1,9 +1,9 @@
 import express from "express";
-import { sendVerificationOtpEmail } from "./controller";
+import { sendVerificationOtpEmail, verifyEmail } from "./controller";
 
 const router = express.Router();
 
-router.post("/verifyEmail");
+router.post("/verifyEmail", verifyEmail);
 
 router.post("/sendVerification", sendVerificationOtpEmail);
 

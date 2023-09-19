@@ -6,10 +6,11 @@ const userSchema = new Schema(
     lastName: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    phoneNumber: { type: Number },
+    phoneNumber: { type: String },
     PaymentInfo: {},
     userPrefrences: {},
     emailVerified: { type: Boolean, default: false },
+    image: { type: String },
   },
   { timestamps: true }
 );
