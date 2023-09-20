@@ -170,8 +170,8 @@ export const registerUser: RequestHandler<
       throw createHttpError(500, "invalid email entered");
     }
     if (password.length < 8) {
-      res.status(500).json("passowrd is too short");
-      throw createHttpError(500, "password is too short");
+      res.status(500).json("password must be at least 8 characters");
+      throw createHttpError(500, "password must be at least 8 characters");
     }
     const existingEmail = await userModel.findOne({ email: email }).exec();
 
@@ -233,12 +233,14 @@ export const loginUser: RequestHandler<
       .exec();
 
     if (!user) {
-      res.status(500).json("invalid user");
-      throw createHttpError(401, "invalid credential");
+      res.status(500).json("Invalid credentials");
+      throw createHttpError(401, "Invalid credentials");
     }
 
     if (user.emailVerified == false) {
-      res.status(500).json("Email has not been verified yet, check your inbox");
+      res
+        .status(500)
+        .json({ email: "Email has not been verified yet, check your inbox" });
       throw createHttpError(
         500,
         "Email has not been verified yet, check your inbox"
@@ -247,7 +249,7 @@ export const loginUser: RequestHandler<
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      throw createHttpError(401, "invalid credential");
+      throw createHttpError(401, "invalid credentials");
     }
 
     req.session.userId = user._id;

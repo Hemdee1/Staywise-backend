@@ -1,8 +1,9 @@
 import { reqBody } from "../otpSystem/controller";
 import CreateHttpError from "http-errors";
 import otpModel from "../otpSystem/model";
-import { sendEmail } from "./sendEmail";
+import sendEmail from "./sendEmail";
 import { hashData } from "./dataHashing";
+import otpHtml from "./otpHtml";
 
 export const sendOtp = async ({
   email,
@@ -20,14 +21,9 @@ export const sendOtp = async ({
 
     const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
 
-    const mailOptions = {
-      from: process.env.AUTH_EMAIL,
-      to: email,
-      subject: subject,
-      html: `<p>${message}</p><p style="color:tomato; font-size:25px; letter-spacing:2px;><b>${otp}</b></p><p>This code <b>expires in ${duration} hour(s)</b>.</p>"`,
-    };
+    const html = otpHtml(message, duration, otp);
 
-    await sendEmail(mailOptions);
+    await sendEmail(html, email);
 
     const hashedOtp = await hashData(otp);
 
