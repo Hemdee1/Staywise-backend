@@ -4,6 +4,7 @@ import createHttpError from "http-errors";
 import { hashData } from "../utils/dataHashing";
 import bcrypt from "bcrypt";
 import { sendOtp } from "../utils/sendOtp";
+import uploadImage from "../utils/uploadImage";
 
 const userData = [
   {
@@ -260,8 +261,53 @@ export const loginUser: RequestHandler<
 };
 
 export const updateUserProfile: RequestHandler = async (req, res, next) => {
+  const id = req.session.userId;
+  const body = req.body;
   try {
-    res.status(201);
+    const img = req.body.img;
+
+    const user = await userModel.findById(id);
+
+    if (!user) {
+      res.status(500).json("User not found");
+      throw createHttpError(401, "User not found");
+    }
+
+    // check for new image and upload to cloudinary
+    if (img && user.image !== img) {
+      const res = await uploadImage(id, img);
+
+      // public_id = 'user-images/'+ user._id
+      // e.g 'user-images/63e57c70aaa573dc514a739b'
+
+      req.body.img = res?.secure_url;
+    }
+
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      image,
+      emailVerified,
+    } = user;
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      id,
+      {
+        firstName,
+        lastName,
+        email,
+        password,
+        phoneNumber,
+        image,
+        emailVerified,
+        ...body,
+      },
+      { new: true }
+    );
+    res.status(201).json(updatedUser);
   } catch (error) {
     next(error);
   }
